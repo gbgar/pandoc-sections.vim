@@ -25,8 +25,7 @@ or in $VIMFILES/ftdetect/pandoc.vim. For example:
 
 Then, you may Lazy-load with NeoBundle:
 
-        NeoBundleLazy 'gbgar/pandoc-sections.vim', 
-            \{ 'autoload' : { 'filetypes' : 'pandoc' } }
+        NeoBundle 'gbgar/pandoc-sections.vim', { 'autoload' : { 'filetypes' : 'pandoc' }}
 
 #Mappings
 

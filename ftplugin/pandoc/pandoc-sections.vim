@@ -51,3 +51,14 @@ xnoremap <script> <buffer> <silent> ][
 xnoremap <script> <buffer> <silent> []
         \ :<c-u>call <SID>NextSection(2, 1, 1)<cr>
 
+omap <script> <buffer> <silent> ]]
+        \ :call <SID>NextSection(1, 0, 0)<cr>
+
+omap <script> <buffer> <silent> [[
+        \ :call <SID>NextSection(1, 1, 0)<cr>
+
+omap <script> <buffer> <silent> ][
+        \ :call <SID>NextSection(2, 0, 0)<cr>
+
+omap <script> <buffer> <silent> []
+        \ :call <SID>NextSection(2, 1, 0)<cr>

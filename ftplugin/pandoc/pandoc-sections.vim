@@ -5,17 +5,23 @@
 "Blake Gardner
 "WTFPL 2014
 
-function! s:NextSection(type, backwards, visual)
-        let nohi=':nohlsearch'
+function! s:NextSection(type, backwards, mode)
+        
         let linejmp ='0'
-        if a:visual
+        if a:mode == 1
                 normal! gv
+                if a:backwards
+                        let linejmp = 2
+                endif
+        endif
+        if a:mode == 2 && a:backwards
+                let linejmp = 2
         endif
 
         if a:type == 1
-                let pattern = '^[=]\+$\|^\s*#\a.*\n'
+                let pattern = '^.*\n^[=]\+$\|^\s*#\a.*\n'
         elseif a:type == 2
-                let pattern = '^[-]\+$\|^\s*#\{2,6}.*\n'
+                let pattern = '^.*\n^[-]\+$\|^\s*#\{2,6}.*\n'
         endif
         if a:backwards
                 let dir = '?' 
@@ -52,13 +58,13 @@ xnoremap <script> <buffer> <silent> []
         \ :<c-u>call <SID>NextSection(2, 1, 1)<cr>
 
 omap <script> <buffer> <silent> ]]
-        \ :call <SID>NextSection(1, 0, 0)<cr>
+        \ :call <SID>NextSection(1, 0, 2)<cr>
 
 omap <script> <buffer> <silent> [[
-        \ :call <SID>NextSection(1, 1, 0)<cr>
+        \ :call <SID>NextSection(1, 1, 2)<cr>
 
 omap <script> <buffer> <silent> ][
-        \ :call <SID>NextSection(2, 0, 0)<cr>
+        \ :call <SID>NextSection(2, 0, 2)<cr>
 
 omap <script> <buffer> <silent> []
-        \ :call <SID>NextSection(2, 1, 0)<cr>
+        \ :call <SID>NextSection(2, 1, 2)<cr>

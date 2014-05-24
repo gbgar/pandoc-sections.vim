@@ -6,69 +6,89 @@
 "WTFPL 2014
 
 "Motions    ]]  [[  ][  []"{{{
-function! s:PandocSectionMovement(type, backwards, mode)"{{{
+"{{{
+function! s:PandocSectionMovement(type, backwards, mode, cnt)
         let linejmp ='0'
+        "Ensure visual mode works as expected
         if a:mode == 1
                 normal! gv
                 "if a:backwards
                         "let linejmp = 2
                 "endif
         endif
+
         if a:mode == 2 && a:backwards
                 "let linejmp = 2
         endif
-
+        "Regex for section types
         if a:type == 1
-                let pattern = '^.*\n^[=]\+$\|^\s*#\a.*\n'
+                let l:pattern = '^.*\n^[=]\+$\|^\s*#\a.*\n'
         elseif a:type == 2
-                let pattern = '^.*\n^[-]\+$\|^\s*#\{2,6}.*\n'
+                let l:pattern = '^.*\n^[-]\+$\|^\s*#\{2,6}.*\n'
         endif
+
         if a:backwards
-                let dir = '?' 
+                "let dir = '?' 
+                let l:sflag = 'bW'
         else
-                let dir = '/'
+                "let dir = '/'
+                let l:sflag = 'W'
         endif
-        execute 'silent normal! ' . dir . pattern . dir . linejmp . "\r"
-        nohlsearch
+
+        "if &l:wrapscan
+                "let l:had_wrapscan = 1
+                "setlocal nowrapscan
+        "endif
+        let i = 0
+        while i < a:cnt
+                "execute 'silent normal! e' . dir . pattern . dir . '0' . "\r"
+                call search(l:pattern, l:sflag)
+                let i = i + 1
+        endwhile
+        "if has('l:had_wrapscan')
+                "setlocal wrapscan
+        "endif
+        "nohlsearch
 endfunction
+
 "}}}
 "mappings"{{{
 "undo mappings for sections and set them to new section function
 nnoremap <script> <buffer> <silent> ]]
-        \ PandocSectionMovement(1, 0, 0)<cr>
+        \ :call <SID>PandocSectionMovement(1, 0, 0, v:count1)<cr>
 
 nnoremap <script> <buffer> <silent> [[
-        \ PandocSectionMovement(1, 1, 0)<cr>
+        \ :call <SID>PandocSectionMovement(1, 1, 0, v:count1)<cr>
 
 nnoremap <script> <buffer> <silent> ][
-        \ PandocSectionMovement(2, 0, 0)<cr>
+        \ :call <SID>PandocSectionMovement(2, 0, 0, v:count1)<cr>
 
 nnoremap <script> <buffer> <silent> []
-        \ PandocSectionMovement(2, 1, 0)<cr>
+        \ :call <SID>PandocSectionMovement(2, 1, 0, v:count1)<cr>
 
 xnoremap <script> <buffer> <silent> ]]
-        \ :<c-u>call <SID>PandocSectionMovement(1, 0, 1)<cr>
+        \ :<c-u>call <SID>PandocSectionMovement(1, 0, 1, v:count1)<cr>
 
 xnoremap <script> <buffer> <silent> [[
-        \ :<c-u>call <SID>PandocSectionMovement(1, 1, 1)<cr>
+        \ :<c-u>call <SID>PandocSectionMovement(1, 1, 1, v:count1)<cr>
 
 xnoremap <script> <buffer> <silent> ][
-        \ :<c-u>call <SID>PandocSectionMovement(2, 0, 1)<cr>
+        \ :<c-u>call <SID>PandocSectionMovement(2, 0, 1, v:count1)<cr>
 
 xnoremap <script> <buffer> <silent> []
-        \ :<c-u>call <SID>PandocSectionMovement(2, 1, 1)<cr>
+        \ :<c-u>call <SID>PandocSectionMovement(2, 1, 1, v:count1)<cr>
 
 omap <script> <buffer> <silent> ]]
-        \ PandocSectionMovement(1, 0, 2)<cr>
+        \ :call <SID>PandocSectionMovement(1, 0, 2, v:count1)<cr>
 
 omap <script> <buffer> <silent> [[
-        \ PandocSectionMovement(1, 1, 2)<cr>
+        \ :call <SID>PandocSectionMovement(1, 1, 2, v:count1)<cr>
 
 omap <script> <buffer> <silent> ][
-        \ PandocSectionMovement(2, 0, 2)<cr>
+        \ :call <SID>PandocSectionMovement(2, 0, 2, v:count1)<cr>
 
 omap <script> <buffer> <silent> []
-        \ PandocSectionMovement(2, 1, 2)<cr>
+        \ :call <SID>PandocSectionMovement(2, 1, 2, v:count1)<cr>
 "}}}
 "}}}
 
@@ -76,8 +96,8 @@ omap <script> <buffer> <silent> []
 "based on based on http://vim.wikia.com/wiki/Creating_new_text_objects 
 "secondary sections text objects  are unsophisticated and need to behave 
 "with reference to the hierarchy
-
-function! s:PandocSectionObject(inout, headerlevel)
+"
+function! s:PandocSectionObject(inout, headerlevel) "{{{
         "check starting position; move down if on section header
         let l:curstartpos = getline(".") . "\n" .  getline(line(".") + 1)
         if l:curstartpos =~ '^.*\n^[=-]\+$\|\s*#\{1,6}.*\n.*$\|^[=-]\{3,}$\n.*$'
@@ -95,7 +115,7 @@ function! s:PandocSectionObject(inout, headerlevel)
        endif
                 
         "move to top of section
-               call <SID>PandocSectionMovement(a:headerlevel,1,0)
+               call <SID>PandocSectionMovement(a:headerlevel, 1, 0, v:count1)
                "inside section
        if a:inout == 0
                let l:sectkind = getline(".")
@@ -118,6 +138,7 @@ function! s:PandocSectionObject(inout, headerlevel)
                endif
      endif
 endfunction
+"}}}
 
 "mappings"{{{
 "Visual

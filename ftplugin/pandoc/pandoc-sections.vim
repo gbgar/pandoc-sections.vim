@@ -8,18 +8,11 @@
 "Motions    ]]  [[  ][  []"{{{
 "{{{
 function! s:PandocSectionMovement(type, backwards, mode, cnt)
-        let linejmp ='0'
         "Ensure visual mode works as expected
         if a:mode == 1
                 normal! gv
-                "if a:backwards
-                        "let linejmp = 2
-                "endif
         endif
 
-        if a:mode == 2 && a:backwards
-                "let linejmp = 2
-        endif
         "Regex for section types
         if a:type == 1
                 let l:pattern = '^.*\n^[=]\+$\|^\s*#\a.*\n'
@@ -27,28 +20,20 @@ function! s:PandocSectionMovement(type, backwards, mode, cnt)
                 let l:pattern = '^.*\n^[-]\+$\|^\s*#\{2,6}.*\n'
         endif
 
+        "Set backwardness and boundaries
+        "'W' for not wrapping around file
         if a:backwards
-                "let dir = '?' 
                 let l:sflag = 'bW'
         else
-                "let dir = '/'
                 let l:sflag = 'W'
         endif
 
-        "if &l:wrapscan
-                "let l:had_wrapscan = 1
-                "setlocal nowrapscan
-        "endif
+        "Loop for [count] number of sections or until top/bottom
         let i = 0
         while i < a:cnt
-                "execute 'silent normal! e' . dir . pattern . dir . '0' . "\r"
                 call search(l:pattern, l:sflag)
                 let i = i + 1
         endwhile
-        "if has('l:had_wrapscan')
-                "setlocal wrapscan
-        "endif
-        "nohlsearch
 endfunction
 
 "}}}

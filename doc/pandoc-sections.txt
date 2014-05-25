@@ -1,22 +1,26 @@
+*pandoc-sections.txt*		For Vim version 7.4		Last change: 2014 May 24
 
-*pandoc-sections.txt*		For Vim version 7.4		Last change: 2014 April 20
+pandoc-sections.vim provides section motions [[ ]] [] and ][ and text objects
+i]] i][ a]] and a][. These motions and text objects account for both
+Pandoc-markdown (= and -) as well as ATX-style (#, ##, etc.) section headers. 
 
-pandoc-sections provides section movements [[ ]] [] and ][ for normal and
-visual modes. Section movements account for both Pandoc (= and -) as well as
-ATX-style (#, ##, etc.) section headers.  This filetype plugin is based on
-Steve Losh's Learn Vimscript the Hard Way "Potions section movement" chapter,
-found here: http://learnvimscriptthehardway.stevelosh.com/chapters/51.html .
-
-============================================================================
-
-=== CONTENTS ===										    				*pandoc-sections-contents*
-
--INSTALLATION |pandoc-sections-installation|
--KEYBINDINGS |pandoc-sections-keybindings|
+This filetype plugin is based on Steve Losh's Learn Vimscript the Hard Way
+"Potions section movement" chapter, found here:
+http://learnvimscriptthehardway.stevelosh.com/chapters/51.html
+as well as
+http://vim.wikia.com/wiki/Creating_new_text_objects.
 
 ============================================================================
+0. Contents     									    				*pandoc-sections-contents*
 
-=== INSTALLATION ===		 											*pandoc-sections-installation*
+1. Installation 					|pandoc-sections-installation|
+2. Mappings							  |pandoc-sections-mappings|
+   2.1 Motions 						|pandoc-sections-motions|
+   2.2 Text-Objects				|pandoc-sections-textobj|
+    
+
+============================================================================
+1. Installation     		 											*pandoc-sections-installation*
 
 - Using a plugin manager
 
@@ -42,18 +46,44 @@ found here: http://learnvimscriptthehardway.stevelosh.com/chapters/51.html .
 							 		\{ 'autoload' : { 'filetype' : 'pandoc' } }
 
 ============================================================================
+2. Mappings   													  	*pandoc-sections-mappings*
 
-=== Mappings ===															*pandoc-sections-keybindings*
+Because this plugin is a filetype-plugin, all mappings are buffer-local.
 
-]]
-Skip forward one primary section header.
-[[
-Skip backward one primary section header.
+============================================================================
+2.1 Motions    															*pandoc-sections-motions*
 
-][
-Skip forward one section header in the second through sixth levels.
+Section motions accept a count and work in normal, visual, and
+operator-pending modes.
 
-[]
-Skip backward one section header in the second through sixth levels.
+map    	action
+----------------------------------------------------------------------------
+
+]] 			Skip forward one primary section header.
+
+[[ 			Skip backward one primary section header.
+
+][ 			Skip forward one section header in the second through sixth levels.
+
+[] 			Skip backward one section header in the second through sixth levels.
+
+============================================================================
+2.2 Text-Objects       											*pandoc-sections-textobj*
+
+Section text-objects operate/select upon primary and secondary through
+sixth-level sections. However, the secondary through sixth-level section
+text objects are not yet sophisticated and only operate up to the next heading
+(primary through sixth-level).
+
+map    	action
+----------------------------------------------------------------------------
+
+i]] 		Inner primary section header.
+
+i][ 		Inner secondary through sixth-level header.
+
+a]]			All of primary header.
+
+a][			All of secondary through sixth-level header.
 
 vim:tw=78:noet:ts=2:ft=help:norl:

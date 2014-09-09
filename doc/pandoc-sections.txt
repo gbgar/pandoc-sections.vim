@@ -1,14 +1,9 @@
-*pandoc-sections.txt*		For Vim version 7.4		Last change: 2014 May 24
+*pandoc-sections.txt*		For Vim version 7.4		Last change: 2014 September 09
 
 pandoc-sections.vim provides section motions [[ ]] [] and ][ and text objects
-i]] i][ a]] and a][. These motions and text objects account for both
-Pandoc-markdown (= and -) as well as ATX-style (#, ##, etc.) section headers. 
+i]] i][ a]] a][ I][ and A][. These motions and text objects account for both
+Setext (= and -) as well as ATX-style (#, ##, etc.) section headers. 
 
-This filetype plugin is based on Steve Losh's Learn Vimscript the Hard Way
-"Potions section movement" chapter, found here:
-http://learnvimscriptthehardway.stevelosh.com/chapters/51.html
-as well as
-http://vim.wikia.com/wiki/Creating_new_text_objects.
 
 ============================================================================
 0. Contents     									    				*pandoc-sections-contents*
@@ -17,6 +12,9 @@ http://vim.wikia.com/wiki/Creating_new_text_objects.
 2. Mappings							  |pandoc-sections-mappings|
    2.1 Motions 						|pandoc-sections-motions|
    2.2 Text-Objects				|pandoc-sections-textobj|
+	   2.2a Text-Objects	  |pandoc-sections-textobj-simple|
+	   2.2b Text-Objects	  |pandoc-sections-textobj-advanced|
+3. Credits								|pandoc-sections-credits|
     
 
 ============================================================================
@@ -70,10 +68,14 @@ map    	action
 ============================================================================
 2.2 Text-Objects       											*pandoc-sections-textobj*
 
-Section text-objects operate/select upon primary and secondary through
-sixth-level sections. However, the secondary through sixth-level section
-text objects are not yet sophisticated and only operate up to the next heading
-(primary through sixth-level).
+Section text objects operate/select upon primary and secondary through
+sixth-level sections. Two types of section objects are available: simple and
+advanced.
+
+============================================================================
+2.2 Simple Text-Objects       							*pandoc-sections-textobj-simple*
+
+Simple text objects operate strictly within the current subheading only.
 
 map    	action
 ----------------------------------------------------------------------------
@@ -85,5 +87,36 @@ i][ 		Inner secondary through sixth-level header.
 a]]			All of primary header.
 
 a][			All of secondary through sixth-level header.
+
+============================================================================
+2.2 Advanced Text-Objects       					*pandoc-sections-textobj-advanced*
+
+"Advanced" text objects operate with reference to header hierarchy. For
+example, an advanced section text object will operate on a third-level
+heading and any fourth-level through sixth-level headings beneath, until
+the bottom or a first- through third-level heading is reached.
+
+map    	action
+----------------------------------------------------------------------------
+
+I][ 		Hierarchy-aware inner secondary through sixth-level header.
+
+A][			Hierarchy-aware all of secondary through sixth-level header.
+
+============================================================================
+3. Credits   													  	*pandoc-sections-credits*
+
+This filetype plugin is based on Steve Losh's Learn Vimscript the Hard Way
+"Potions section movement" chapter, found here:
+
+http://learnvimscriptthehardway.stevelosh.com/chapters/51.html
+
+as well as
+
+http://vim.wikia.com/wiki/Creating_new_text_objects.
+
+Pandoc is a document converter created by John MacFarlane:
+
+http://johnmacfarlane.net/pandoc/index.html
 
 vim:tw=78:noet:ts=2:ft=help:norl:

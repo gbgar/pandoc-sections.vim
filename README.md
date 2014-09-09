@@ -1,11 +1,6 @@
-pandoc-sections.vim provides section motions \[\[ \]\] \[\] and \]\[ and text
-objects i]] i][ a]] and a][. These motions and text objects account for both
-Pandoc-markdown (= and -) as well as ATX-style (#, ##, etc.) section headers. 
-
-This filetype plugin is based on Steve Losh's Learn Vimscript the Hard Way
-"Potions section movement" chapter, found here:
-http://learnvimscriptthehardway.stevelosh.com/chapters/51.html as well as
-http://vim.wikia.com/wiki/Creating_new_text_objects.
+pandoc-sections.vim provides section motions [[ ]] [] and ][ and text objects
+i]] i][ a]] a][ I][ and A][. These motions and text objects account for both
+Setext (= and -) as well as ATX-style (#, ##, etc.) section headers. 
 
 #Installation
 
@@ -32,7 +27,7 @@ Then, you may Lazy-load with NeoBundle:
 
 #Mappings
 
-## Motions
+##Motions
 
 \]\]          Skip forward one primary section header.
 
@@ -42,7 +37,14 @@ Then, you may Lazy-load with NeoBundle:
 
 \[\]          Skip backward one section header in the second through sixth levels.
 
-## Text Objects
+##Text Objects
+
+Section text objects operate/select upon primary and secondary through
+sixth-level sections. Two types of section objects are available: simple and
+advanced.
+
+###Simple Text Objects
+Simple text objects operate strictly within the current subheading only.
 
 i\]\] 		Inner primary section header.
 
@@ -52,6 +54,28 @@ a\]\]		All of primary header.
 
 a\]\[		All of secondary through sixth-level header.
 
-Note: the secondary through sixth-level section
-text objects are not yet sophisticated and only operate up to the next heading
-(primary through sixth-level).
+###Advanced Text-Objects
+
+"Advanced" text objects operate with reference to header hierarchy. For
+example, an advanced section text object will operate on a third-level heading
+and any fourth-level through sixth-level headings beneath, until the bottom or
+a first- through third-level heading is reached.
+
+I\]\[ 		Hierarchy-aware inner secondary through sixth-level header.
+
+A\]\[			Hierarchy-aware all of secondary through sixth-level header.
+
+#Credits 
+
+This filetype plugin is based on Steve Losh's Learn Vimscript the Hard Way
+"Potions section movement" chapter, found here:
+
+http://learnvimscriptthehardway.stevelosh.com/chapters/51.html 
+
+as well as
+
+http://vim.wikia.com/wiki/Creating_new_text_objects
+
+Pandoc is a document converter created by John MacFarlane:
+
+http://johnmacfarlane.net/pandoc/index.html

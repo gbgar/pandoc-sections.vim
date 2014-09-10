@@ -84,93 +84,100 @@ omap <script> <buffer> <silent> []
 "Text Objects i]]    i][     a]]     a]["{{{
 "Text objects for low-level sections now behave with 
 "reference to the hierarchy: I][ and A][
-function! s:PandocSectionObject(inall, headerlevel, smart) "{{{
+function! s:PandocSectionObjectInitialize(inall, headerlevel, advanced) "{{{
+        "Set cursor start position in order to return if ][ called in primary
+        "section
+        let curstart = getpos(".")
+        "If cursor starting poition is on a header, move it to top/left.
         let l:curline = getline(".")
         let l:nexline = getline(line(".") + 1)
         if l:nexline =~  '^[=-]\+$'
-                       call cursor(line(".") + 2, 1)
+                call cursor(line(".") + 2, 1)
         elseif l:curline =~ '^[=-]\+$\|^\s*#\{1,6}.*$'
-                       call cursor(line(".") + 1, 1)
+                call cursor(line(".") + 1, 1)
         endif
-        
         "Move to top of section
         call <SID>PandocSectionMovement(a:headerlevel,1,0,1)
-       let l:curline = getline(".")
-       let l:nexline = getline(line(".") + 1)
-        
-       if a:smart == 1
-               " if l:nexline =~ '^[-]\+$'
-               "         let s:smartheadlevel = 2
-               " else
-                       let s:smartheadlevel = s:PandocSectionLevel(l:curline,l:nexline)
-               " endif
-       endif
+        let l:curline = getline(".")
+        let l:nexline = getline(line(".") + 1)
+        "Get header level as integer 
+        let l:advancedheadlevel = s:PandocSectionLevel(l:curline,nexline)
+        "If advanced is used in primary section, return cursor to start and
+        "end
+        if (( l:advancedheadlevel == 1 ) && ( a:advanced == 1 )) || ( l:advancedheadlevel == 0 )
+                call setpos(".",l:curstart)
+        else
+                call s:PandocSectionObjectMove(a:inall, a:headerlevel, a:advanced, l:curline,l:nexline,l:advancedheadlevel)
+        endif
+endfunction "{{{
 
-       "inside of section i]] i][
-       if a:inall == 0
-               "Move down for 'inner' movement
-                if l:nexline =~ '^[=-]\+$'
-                       call cursor(line(".") + 2, 1)
-                elseif l:curline =~ '^[=-]\+$\|^\s*#\{1,6}.*$'
-                       call cursor(line(".") + 1, 1)
+function! s:PandocSectionObjectMove(inall, headerlevel, advanced, lineone, linetwo, advancedheadlevel) "{{{
+        "inside of section i]] i][
+        if a:inall == 0
+                "Move down for 'inner' movement
+                if a:linetwo =~ '^[=-]\+$'
+                        call cursor(line(".") + 2, 1)
+                elseif a:lineone =~ '^[=-]\+$\|^\s*#\{1,6}.*$'
+                        call cursor(line(".") + 1, 1)
                 endif
-               "Check header level to determine regexes
-               if a:headerlevel == 1
-                       if s:IsBottom() == 0
-                               execute 'silent normal VG'
-                       else
-                               execute  'silent normal V/^.*\n^[=]\+$\|^\s*#\a.*$'."\r" . 'kk'
-                       endif
-               elseif a:headerlevel == 2
-                       if s:IsBottom() == 0
-                               execute 'silent normal VG'
-                       else
-                               if a:smart == 0
-                                       execute 'silent normal V/^.*\n^[=-]\+$\|^\s*#\{1,6}.*\n' ."\r" . 'kk'
-                               endif
-                               if a:smart == 1
-                                       call s:PandocSmartSection(s:smartheadlevel,0)
-                               endif
-                       endif
-               endif
+                "Check if last section, primary or not to determine regexes
+                if a:headerlevel == 1
+                        if s:IsBottom() == 0
+                                execute 'silent normal VG'
+                        else
+                                execute  'silent normal V/^.*\n^[=]\+$\|^\s*#\a.*$'."\r" . 'kk'
+                        endif
+                elseif a:headerlevel == 2
+                        if s:IsBottom() == 0
+                                execute 'silent normal VG'
+                        else
+                                if a:advanced == 0
+                                        execute 'silent normal V/^.*\n^[=-]\+$\|^\s*#\{1,6}.*\n' ."\r" . 'kk'
+                                endif
+                                if a:advanced == 1
+                                        call s:PandocAdvancedObjInit(a:advancedheadlevel,0)
+                                endif
+                        endif
+                endif
         endif
 
-     "all of section: a]] a][
-       if a:inall == 1
-               "Check header level to determine regexes
-               "Check if last section
-               if a:headerlevel == 1
-                       if s:IsBottom() == 0
-                               execute 'silent normal VG'
-                       else
-                               execute  'silent normal V/^.*\n^[=]\+$\|^\s*#\a.*\n'."\r" . 'k'
-                       endif
-               elseif a:headerlevel == 2
-                       if s:IsBottom() == 0
-                               execute 'silent normal VG'
-                       else
-                               if a:smart == 0
-                                       execute 'silent normal V/^.*\n^[=-]\+$\|^\s*#\{1,6}.*\n' ."\r" . 'k'
-                               endif
-                               if a:smart == 1
-                                       call s:PandocSmartSection(s:smartheadlevel,1)
-                               endif
-                       endif
-               endif
-     endif
+        "all of section: a]] a][
+        if a:inall == 1
+                "Cursor is on header and does not need to move.
+                "Check if last section, primary or not to determine regexes
+                if a:headerlevel == 1
+                        if s:IsBottom() == 0
+                                execute 'silent normal VG'
+                        else
+                                execute  'silent normal V/^.*\n^[=]\+$\|^\s*#\a.*\n'."\r" . 'k'
+                        endif
+                elseif a:headerlevel == 2
+                        if s:IsBottom() == 0
+                                execute 'silent normal VG'
+                        else
+                                if a:advanced == 0
+                                        execute 'silent normal V/^.*\n^[=-]\+$\|^\s*#\{1,6}.*\n' ."\r" . 'k'
+                                endif
+                                if a:advanced == 1
+                                        call s:PandocAdvancedObjInit(a:advancedheadlevel,1)
+                                endif
+                        endif
+                endif
+        endif
 endfunction
 
 "}}}
 
 "Text Object Helper functions"{{{
+
+"Check if next match exists or is at bottom
 function! s:IsBottom()"{{{
-        "Check if next match exists or is at bottom
         return search('^.*\n^[=]\+$\|^\s*#\a.*$', 'Wn')
 endfunction
 "}}}
 
+"return heading level as integer
 function! s:PandocSectionLevel(lineone,linetwo)"{{{ 
-        "return heading level as integer
         if     a:linetwo =~ '^[=]\+$' 
                 return 1              
         elseif a:linetwo =~ '^[-]\+$'
@@ -178,12 +185,11 @@ function! s:PandocSectionLevel(lineone,linetwo)"{{{
         elseif a:lineone =~ '^\#\+\.*'
                 return strlen(matchstr(a:lineone,'\#\+',0))
         else 
-                "Hit bottom
                 return 0
         endif
 endfunction"}}}
 
-"Smart jump functions:"{{{
+"Advanced jump functions:"{{{
 "called by PandocSectionObject() for low-level headings.
 "The commented function is a loop that, according to tpope's :Time command is
 "somewhat faster than the function and it's recursive helper below.  However,
@@ -191,7 +197,7 @@ endfunction"}}}
 "(above cursor) separated from another, lower-level header by one blank line
 "(position of cursor) does not get captured by the visual mode command.
 
-" function! s:PandocSmartSection(headlevel,inorall)"{{{
+" function! s:PandocAdvancedObjInit(headlevel,inorall)"{{{
 "         if a:inorall == 0
 "                 execute 'silent normal j'
 "         endif
@@ -222,14 +228,14 @@ endfunction"}}}
 "         endif
 " endfunction"}}}
 
-function! s:PandocSmartSection(headlevel,inorall)"{{{
+function! s:PandocAdvancedObjInit(headlevel,inorall)"{{{
         if a:inorall == 0
                 execute 'silent normal j'
         endif
         execute 'silent normal V/^.*\n^[=-]\+$\|^\s*#\{1,6}.*\n' ."\r"
         let s:moveup= 1
         let s:objseclev = s:PandocSectionLevel(getline("."),getline(line(".")+1)) 
-        call s:PandocSmartObj(a:headlevel,s:objseclev)
+        call s:PandocAdvancedObj(a:headlevel,s:objseclev)
         if s:moveup == 1
                 if a:inorall == 0
                         execute 'silent normal kk'
@@ -241,7 +247,7 @@ function! s:PandocSmartSection(headlevel,inorall)"{{{
         endif
 endfunction
 
-function! s:PandocSmartObj(orig,lev)
+function! s:PandocAdvancedObj(orig,lev)
         if a:lev > a:orig
                if s:IsBottom() == 0
                        execute 'silent normal G'
@@ -250,7 +256,7 @@ function! s:PandocSmartObj(orig,lev)
                        execute 'normal! gv/^.*\n^[=-]\+$\|^\s*#\{1,6}.*\n' . "\r"
                        let s:moveup = 1
                        let s:objseclev = s:PandocSectionLevel(getline("."),getline(line(".")+1)) 
-                       call s:PandocSmartObj(a:orig,s:objseclev)
+                       call s:PandocAdvancedObj(a:orig,s:objseclev)
                endif
         endif
 endfunction"}}}
@@ -260,16 +266,16 @@ endfunction"}}}
 "Text-Object mappings"{{{
 "Visual
 xnoremap <script> <buffer> <silent> i]]
-                        \ :call <SID>PandocSectionObject(0,1,0)<cr>
+                        \ :call <SID>PandocSectionObjectInitialize(0,1,0)<cr>
 
 xnoremap <script> <buffer> <silent> i][
-                        \ :call <SID>PandocSectionObject(0,2,0)<cr>
+                        \ :call <SID>PandocSectionObjectInitialize(0,2,0)<cr>
 
 xnoremap <script> <buffer> <silent> a]]
-                        \ :call <SID>PandocSectionObject(1,1,0)<cr>
+                        \ :call <SID>PandocSectionObjectInitialize(1,1,0)<cr>
 
 xnoremap <script> <buffer> <silent> a][
-                        \ :call <SID>PandocSectionObject(1,2,0)<cr>
+                        \ :call <SID>PandocSectionObjectInitialize(1,2,0)<cr>
 
 "Operator-pending 
 omap <script> <buffer> <silent> a]] :normal Va]]<CR>
@@ -277,13 +283,13 @@ omap <script> <buffer> <silent> a][ :normal Va][<CR>
 omap <script> <buffer> <silent> i]] :normal Vi]]<CR>
 omap <script> <buffer> <silent> i][ :normal Vi][<CR>
 
-"Experimental 'smart' sections for lower lower-level I][ and A ][
+"Experimental 'advanced' sections for lower lower-level I][ and A ][
 "Visual
 xnoremap <script> <buffer> <silent> I][
-                        \ :call <SID>PandocSectionObject(0,2,1)<cr>
+                        \ :call <SID>PandocSectionObjectInitialize(0,2,1)<cr>
 
 xnoremap <script> <buffer> <silent> A][
-                        \ :call <SID>PandocSectionObject(1,2,1)<cr>
+                        \ :call <SID>PandocSectionObjectInitialize(1,2,1)<cr>
 "
 "Operator-pending
 omap <script> <buffer> <silent> A][ :normal VA][<CR>

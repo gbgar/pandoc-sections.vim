@@ -14,7 +14,7 @@ I use NeoBundle:
 
 Retrieve pandoc-sections.vim and copy it to ~/.vim/ftplugins/pandoc/pandoc-sections.vim.
 
-##Set pandoc filtype association (Optional)
+##Set pandoc filetype association (Optional)
   
 If you wish to do so, add an autocommand to associate a filetype with pandoc in your vimrc 
 or in $VIMFILES/ftdetect/pandoc.vim. For example:
@@ -43,8 +43,15 @@ Section text objects operate/select upon primary and secondary through
 sixth-level sections. Two types of section objects are available: simple and
 advanced.
 
-###Simple Text Objects
-Simple text objects operate strictly within the current subheading only.
+Primary section objects work in any location, but with the addition of advanced
+text objects, the lower-level objects only function within lower-level
+headings.  This is to prevent odd jumping behavior when lower-level text objects were
+used in an exclusively first-level heading.
+
+###Simple Text Objects Simple text objects operate
+
+Simple text objects operate strictly within or on the title of the current
+subheading and without reference to hierarchy.
 
 i\]\] 		Inner primary section header.
 
@@ -63,7 +70,7 @@ a first- through third-level heading is reached.
 
 I\]\[ 		Hierarchy-aware inner secondary through sixth-level header.
 
-A\]\[			Hierarchy-aware all of secondary through sixth-level header.
+A\]\[	    Hierarchy-aware all of secondary through sixth-level header.
 
 #Credits 
 

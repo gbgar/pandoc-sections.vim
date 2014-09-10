@@ -31,7 +31,7 @@ Setext (= and -) as well as ATX-style (#, ##, etc.) section headers.
 	Retrieve pandoc-sections.vim and copy it to 
 	~/.vim/ftplugins/pandoc/pandoc-sections.vim.
 
-- Set pandoc filtype association (Optional)
+- Set pandoc filetype association (Optional)
   
 	If you wish to do so, add an autocommand to associate a filetype with 
 	pandoc in your vimrc or in $VIMFILES/ftdetect/pandoc.vim. For example:
@@ -72,10 +72,16 @@ Section text objects operate/select upon primary and secondary through
 sixth-level sections. Two types of section objects are available: simple and
 advanced.
 
-============================================================================
-2.2 Simple Text-Objects       							*pandoc-sections-textobj-simple*
+Primary section objects work in any location, but with the addition of
+advanced text objects, the lower-level objects only function within
+lower-level headings. This is to prevent odd jumping behavior when used in an
+exclusively first-level heading.  
 
-Simple text objects operate strictly within the current subheading only.
+============================================================================
+2.2a Simple Text-Objects       							*pandoc-sections-textobj-simple*
+
+Simple text objects operate strictly within the current subheading and 
+without reference to hierarchy.
 
 map    	action
 ----------------------------------------------------------------------------
@@ -89,7 +95,7 @@ a]]			All of primary header.
 a][			All of secondary through sixth-level header.
 
 ============================================================================
-2.2 Advanced Text-Objects       					*pandoc-sections-textobj-advanced*
+2.2b Advanced Text-Objects       					*pandoc-sections-textobj-advanced*
 
 "Advanced" text objects operate with reference to header hierarchy. For
 example, an advanced section text object will operate on a third-level

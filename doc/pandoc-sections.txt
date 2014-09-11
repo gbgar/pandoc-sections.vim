@@ -38,11 +38,6 @@ Setext (= and -) as well as ATX-style (#, ##, etc.) section headers.
 
 		au BufNewFile,BufRead *.pdk set filetype=pandoc
 
-	Then, you may Lazy-load with NeoBundle:
-
-		NeoBundleLazy 'gbgar/pandoc-sections.vim', 
-							 		\{ 'autoload' : { 'filetype' : 'pandoc' } }
-
 ============================================================================
 2. Mappings   													  	*pandoc-sections-mappings*
 

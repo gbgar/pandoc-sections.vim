@@ -16,14 +16,10 @@ Retrieve pandoc-sections.vim and copy it to ~/.vim/ftplugins/pandoc/pandoc-secti
 
 ##Set pandoc filetype association (Optional)
   
-If you wish to do so, add an autocommand to associate a filetype with pandoc in your vimrc 
+If you wish, add an autocommand to associate a filetype with pandoc in your vimrc 
 or in $VIMFILES/ftdetect/pandoc.vim. For example:
 
 		au BufNewFile,BufRead *.pdk set filetype=pandoc
-
-Then, you may Lazy-load with NeoBundle:
-
-        NeoBundle 'gbgar/pandoc-sections.vim', { 'autoload' : { 'filetypes' : 'pandoc' }}
 
 #Mappings
 

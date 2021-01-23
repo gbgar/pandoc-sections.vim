@@ -16,7 +16,7 @@ function! s:PandocSectionMovement(type, backwards, mode, cnt)
 
         "Regex for section types
         if a:type == 1
-                let s:movpattern = '^.*\n^[=]\+$\|^\s*#\a.*\n'
+                let s:movpattern = '^.*\n^[=]\+$\|^\s*#.*\n'
         elseif a:type == 2
                 let s:movpattern = '^.*\n^[-]\+$\|^\s*#\{2,6}.*\n'
         endif
@@ -125,7 +125,7 @@ function! s:PandocSectionObjectMove(inall, headerlevel, advanced, lineone, linet
                         if s:IsBottom() == 0
                                 execute 'silent normal VG'
                         else
-                                execute  'silent normal V/^.*\n^[=]\+$\|^\s*#\a.*$'."\r" . 'kk'
+                                execute  'silent normal V/^.*\n^[=]\+$\|^\s*#.*$'."\r" . 'kk'
                         endif
                 elseif a:headerlevel == 2
                         if s:IsBottom() == 0
@@ -149,7 +149,7 @@ function! s:PandocSectionObjectMove(inall, headerlevel, advanced, lineone, linet
                         if s:IsBottom() == 0
                                 execute 'silent normal VG'
                         else
-                                execute  'silent normal V/^.*\n^[=]\+$\|^\s*#\a.*\n'."\r" . 'k'
+                                execute  'silent normal V/^.*\n^[=]\+$\|^\s*#.*\n'."\r" . 'k'
                         endif
                 elseif a:headerlevel == 2
                         if s:IsBottom() == 0
@@ -172,7 +172,7 @@ endfunction
 
 "Check if next match exists or is at bottom
 function! s:IsBottom()"{{{
-        return search('^.*\n^[=]\+$\|^\s*#\a.*$', 'Wn')
+        return search('^.*\n^[=]\+$\|^\s*#.*$', 'Wn')
 endfunction
 "}}}
 

@@ -1,29 +1,35 @@
-pandoc-sections.vim provides section motions [[ ]] [] and ][ and text objects
-i]] i][ a]] a][ I][ and A][. These motions and text objects account for both
-Setext (= and -) as well as ATX-style (#, ##, etc.) section headers. 
+# Description
 
-#Installation
+`pandoc-sections.vim` provides the section motions `[[` `]]` `[]` and `][` and text objects
+`i]]` `i][` `a]]` `a][` `I][` and `A][`. These motions and text objects account for both
+Setext (`=` and `-`) as well as ATX-style (`# `, `## `, etc.) headings.
 
-##Using a plugin manager
+
+# Installation
+
+## Using a plug-in manager
 
 I use NeoBundle:
 
-		NeoBundle 'gbgar/pandoc-sections.vim', 
+    NeoBundle 'gbgar/pandoc-sections.vim',
 
-##Manually
+
+## Manually
 
 Retrieve pandoc-sections.vim and copy it to ~/.vim/ftplugins/pandoc/pandoc-sections.vim.
 
-##Set pandoc filetype association (Optional)
-  
-If you wish, add an autocommand to associate a filetype with pandoc in your vimrc 
+
+## Set pandoc filetype association (Optional)
+
+If you wish, add an autocommand to associate a filetype with pandoc in your vimrc
 or in $VIMFILES/ftdetect/pandoc.vim. For example:
 
-		au BufNewFile,BufRead *.pdk set filetype=pandoc
+    au BufNewFile,BufRead *.pdk set filetype=pandoc
 
-#Mappings
 
-##Motions
+# Mappings
+
+## Motions
 
 \]\]          Skip forward one primary section header.
 
@@ -33,7 +39,7 @@ or in $VIMFILES/ftdetect/pandoc.vim. For example:
 
 \[\]          Skip backward one section header in the second through sixth levels.
 
-##Text Objects
+## Text Objects
 
 Section text objects operate/select upon primary and secondary through
 sixth-level sections. Two types of section objects are available: simple and
@@ -44,7 +50,7 @@ text objects, the lower-level objects only function within lower-level
 headings.  This is to prevent odd jumping behavior when lower-level text objects were
 used in an exclusively first-level heading.
 
-###Simple Text Objects Simple text objects operate
+### Simple Text Objects Simple text objects operate
 
 Simple text objects operate strictly within or on the title of the current
 subheading and without reference to hierarchy.
@@ -57,7 +63,7 @@ a\]\]		All of primary header.
 
 a\]\[		All of secondary through sixth-level header.
 
-###Advanced Text-Objects
+### Advanced Text-Objects
 
 "Advanced" text objects operate with reference to header hierarchy. For
 example, an advanced section text object will operate on a third-level heading
@@ -68,12 +74,13 @@ I\]\[ 		Hierarchy-aware inner secondary through sixth-level header.
 
 A\]\[	    Hierarchy-aware all of secondary through sixth-level header.
 
-#Credits 
+
+# Credits
 
 This filetype plugin is based on Steve Losh's Learn Vimscript the Hard Way
 "Potions section movement" chapter, found here:
 
-http://learnvimscriptthehardway.stevelosh.com/chapters/51.html 
+<http://learnvimscriptthehardway.stevelosh.com/chapters/51.html>
 
 as well as
 
